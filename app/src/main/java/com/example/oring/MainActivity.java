@@ -27,9 +27,11 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.tensorflow.lite.support.common.FileUtil;
 import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 public class MainActivity extends AppCompatActivity {
     Button button;
@@ -45,12 +47,12 @@ public class MainActivity extends AppCompatActivity {
     public Interpreter tflite;
     ImageProcessor imageProcessor;
     TensorImage tensorImage;
+    TensorBuffer output=TensorBuffer.createFixedSize(new int[]{1, 1001}, DataType.UINT8);
 
     private int ChannelSize =3;
     int width = 224;
     int height = 224;
 
-    String output;
 
     int inputsize = width*height*ChannelSize;
 
@@ -83,16 +85,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPrediction() {
-        try{
-            tflite = new Interpreter(loadModel(MainActivity.this,"model.tflite"));
-
-            tflite.run(tensorImage,output);
-            Log.e(TAG,"Ootput Generated");
+//        try{
+//            tflite = new Interpreter(loadModel(MainActivity.this,"model.tflite"));
+//
+//            tflite.run(tensorImage,output);
+//            Log.e(TAG,"Ootput Generated");
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//            Log.e(TAG,"Isn't Running");
+//        }
+        try {
+            MappedByteBuffer tflitemodel = FileUtil.loadMappedFile(this,"model.tflite");
+            Interpreter tflite = new Interpreter(tflitemodel);
+            if(null!=tflite)
+            {
+                tflite.run(tensorImage.getBuffer(),output.getBuffer());
+            }
         }
         catch (IOException e)
         {
-            e.printStackTrace();
-            Log.e(TAG,"Isn't Running");
+            
         }
     }
 
@@ -117,16 +131,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-   private MappedByteBuffer loadModel(Activity activity,String ModelFile) throws IOException
-   {
-       AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(ModelFile);
-       FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-       FileChannel fileChannel = inputStream.getChannel();
-       long startOffset = fileDescriptor.getStartOffset();
-       long declaredlength = fileDescriptor.getDeclaredLength();
-       Log.e(TAG,"Model Loaded Properly");
-       return fileChannel.map(FileChannel.MapMode.READ_ONLY,startOffset,declaredlength);
-   }
+
+//   private MappedByteBuffer loadModel(Activity activity,String ModelFile) throws IOException
+//   {
+//       AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(ModelFile);
+//       FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+//       FileChannel fileChannel = inputStream.getChannel();
+//       long startOffset = fileDescriptor.getStartOffset();
+//       long declaredlength = fileDescriptor.getDeclaredLength();
+//       Log.e(TAG,"Model Loaded Properly");
+//       return fileChannel.map(FileChannel.MapMode.READ_ONLY,startOffset,declaredlength);
+//   }
 
 
 
