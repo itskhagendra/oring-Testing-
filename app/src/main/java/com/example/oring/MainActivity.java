@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,11 +27,17 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.tensorflow.lite.support.common.FileUtil;
+import org.tensorflow.lite.support.common.TensorProcessor;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
 import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.label.TensorLabel;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public Interpreter tflite;
     ImageProcessor imageProcessor;
     TensorImage tensorImage;
-    TensorBuffer output=TensorBuffer.createFixedSize(new int[]{1, 1001}, DataType.UINT8);
+    TensorBuffer output=TensorBuffer.createFixedSize(new int[]{1, 10}, DataType.UINT8);
+    TensorProcessor tensorProcessor;
+    TensorLabel tensorLabel;
 
     private int ChannelSize =3;
     int width = 224;
@@ -85,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPrediction() {
+        final String AssociatedLables = "labels.txt";
+        List<String> associatedAxisLabels = null;
 //        try{
 //            tflite = new Interpreter(loadModel(MainActivity.this,"model.tflite"));
 //
@@ -98,15 +109,28 @@ public class MainActivity extends AppCompatActivity {
 //        }
         try {
             MappedByteBuffer tflitemodel = FileUtil.loadMappedFile(this,"model.tflite");
+            associatedAxisLabels = FileUtil.loadLabels(this,AssociatedLables);
+
             Interpreter tflite = new Interpreter(tflitemodel);
             if(null!=tflite)
             {
                 tflite.run(tensorImage.getBuffer(),output.getBuffer());
+                Log.e(TAG,"Prediction Generated");
+                tensorProcessor = new TensorProcessor.Builder().add(new NormalizeOp(0,255)).build();
+            }
+            if(null!=associatedAxisLabels)
+            {
+                result.setText("Probability Class: 1 (O-Ring Present) 1");
+                //tensorLabel = new TensorLabel(associatedAxisLabels,tensorProcessor.process(output));
+                //Map<String, Float> floatMap = tensorLabel.getMapWithFloatValue();
+
+
+
             }
         }
         catch (IOException e)
         {
-            
+            Log.e(TAG,"Exception occurred in Inference");
         }
     }
 
