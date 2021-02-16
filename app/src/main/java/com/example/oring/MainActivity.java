@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap imageBitmap;
     ImageView input;
     TextView result;
+    Button SelectImage;
 
 
     private static final String TAG = "MyActivity";
@@ -73,9 +74,7 @@ public class MainActivity extends AppCompatActivity {
         result = (TextView) findViewById(R.id.predict);
         button = (Button) findViewById(R.id.button);
         preprocess = (Button) findViewById(R.id.preprocess);
-
-
-
+        SelectImage = (Button) findViewById(R.id.getImages);
 
 
         preprocess.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +87,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
               getPrediction();
+            }
+        });
+
+        SelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
 

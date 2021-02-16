@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Predcition"
+        android:text="Prediction"
         android:id="@+id/predict"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,6 +24,12 @@
         android:layout_above="@id/preprocess"
         android:src="@drawable/image"
         android:layout_below="@id/predict"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/preprocess"
+        android:id="@+id/getImages"
+        android:text="Select Image"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
