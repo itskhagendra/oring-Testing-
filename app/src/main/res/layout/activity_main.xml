@@ -17,13 +17,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/image"
-        android:layout_above="@id/preprocess"
-        android:src="@drawable/image"
-        android:layout_below="@id/predict"/>
+        android:layout_above="@id/takePicture"
+        android:layout_below="@id/predict"
+        android:src="@drawable/image" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/takePicture"
+        android:text="TakePicture"
+        android:layout_above="@id/getImages"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

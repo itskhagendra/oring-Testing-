@@ -50,6 +50,7 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 public class MainActivity extends AppCompatActivity {
     Button button;
     Button preprocess;
+    Button takepic;
     Bitmap imageBitmap;
     ImageView input;
     TextView result;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         preprocess = (Button) findViewById(R.id.preprocess);
         SelectImage = (Button) findViewById(R.id.getImages);
+        takepic = (Button) findViewById(R.id.takePicture);
+
 
 
         preprocess.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +107,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        takepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cameraPicture();
+            }
+        });
+
+    }
+
+    private void cameraPicture() {
+        Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(camera,0);
     }
 
 
@@ -146,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectImage() {
         Intent intent = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent,-1);
+        startActivityForResult(intent,1);
 
     }
 
