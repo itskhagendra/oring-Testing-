@@ -1,14 +1,20 @@
 package com.example.oring;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
@@ -23,6 +29,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
@@ -93,9 +100,51 @@ public class MainActivity extends AppCompatActivity {
         SelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                selectImage();
             }
         });
+
+    }
+
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode !=RESULT_CANCELED)
+        {
+            switch (requestCode){
+                case 0:
+                    if(resultCode == RESULT_OK && data !=null)
+                    {
+                        Bitmap image = (Bitmap) data.getExtras().get("data");
+                        input.setImageBitmap(image);
+                    }
+                    break;
+                case 1:
+                    if(resultCode == RESULT_OK && data !=null)
+                    {
+                        Uri imageUrl = data.getData();
+                        String[] path = {MediaStore.Images.Media.DATA};
+                        if(imageUrl != null)
+                        {
+                            Cursor cursor = getContentResolver().query(imageUrl,path,null,null,null);
+                            if(cursor !=null)
+                            {
+                                cursor.moveToFirst();
+
+                            }
+                            int columnIndex = cursor.getColumnIndex(path[0]);
+                            String picturePath = cursor.getString(columnIndex);
+                            input.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                            cursor.close();
+                        }
+                    }
+            }
+        }
+    }
+
+    private void selectImage() {
 
     }
 
