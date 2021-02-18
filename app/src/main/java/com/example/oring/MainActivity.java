@@ -60,19 +60,19 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyActivity";
 
 
-    public Interpreter tflite;
+//    public Interpreter tflite;
     ImageProcessor imageProcessor;
     TensorImage tensorImage;
     TensorBuffer output=TensorBuffer.createFixedSize(new int[]{1, 10}, DataType.UINT8);
     TensorProcessor tensorProcessor;
-    TensorLabel tensorLabel;
+//    TensorLabel tensorLabel;
 
-    private int ChannelSize =3;
+//    private final int ChannelSize =3;
     int width = 224;
     int height = 224;
 
 
-    int inputsize = width*height*ChannelSize;
+//    int inputsize = width*height*ChannelSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
